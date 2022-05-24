@@ -1,6 +1,8 @@
 import time
+from datetime import datetime
 from RPi import GPIO
 from helpers.klasseknop import Button
+from helpers.ultrasonic import Ultrasonic
 import threading
 
 from flask_cors import CORS
@@ -15,7 +17,10 @@ from selenium import webdriver
 
 
 ledPin = 21
-btnPin = Button(20)
+btnPin = Button(24)
+
+US_sensor = Ultrasonic(16,20)
+
 
 # Code voor Hardware
 def setup_gpio():
@@ -24,6 +29,8 @@ def setup_gpio():
 
     GPIO.setup(ledPin, GPIO.OUT)
     GPIO.output(ledPin, GPIO.LOW)
+    
+
     
     btnPin.on_press(lees_knop)
 
@@ -91,6 +98,7 @@ def switch_light(data):
         print(f"TV kamer moet switchen naar {new_status} !")
         GPIO.output(ledPin, new_status)
 
+@socketio.on("B2F_add_history")
 
 
 # START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
@@ -144,6 +152,24 @@ def start_chrome_thread():
     chromeThread = threading.Thread(target=start_chrome_kiosk, args=(), daemon=True)
     chromeThread.start()
 
+def measuring():
+    while True:
+        US_sensor.measure()
+        distance = US_sensor.distance
+        history_comment = ""
+        if distance < 20:
+            history_comment = "power off to avoid crash with wall"
+        DataRepository.Add_measurement(1, distance, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), history_comment)
+        print(distance)
+        
+        time.sleep(5)
+
+
+
+def start_measure_thread():
+    print("***starting measurements***")
+    measureThread = threading.Thread(target=measuring, args=(), daemon=True)
+    measureThread.start()
 
 
 # ANDERE FUNCTIES
@@ -152,8 +178,9 @@ def start_chrome_thread():
 if __name__ == '__main__':
     try:
         setup_gpio()
-        start_thread()
+        # start_thread()
         start_chrome_thread()
+        start_measure_thread()
         print("**** Starting APP ****")
         socketio.run(app, debug=False, host='0.0.0.0')
     except KeyboardInterrupt:
