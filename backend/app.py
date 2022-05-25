@@ -3,7 +3,9 @@ from datetime import datetime
 from RPi import GPIO
 from helpers.klasseknop import Button
 from helpers.ultrasonic import Ultrasonic
+from helpers.addComment import add_comment
 import threading
+
 
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, send
@@ -154,13 +156,10 @@ def start_chrome_thread():
 
 def measuring():
     while True:
+        # ultrasonic sensor
         US_sensor.measure()
         distance = US_sensor.distance
-        history_comment = ""
-        if distance < 20:
-            history_comment = "power off to avoid crash with wall"
-        DataRepository.Add_measurement(1, distance, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), history_comment)
-        print(distance)
+        DataRepository.Add_measurement(1, distance, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), add_comment(1, distance))
         
         time.sleep(5)
 
