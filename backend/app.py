@@ -77,8 +77,9 @@ def initial_connection():
     print('A new client connect')
     # # Send to the client!
     # vraag de status op van de lampen uit de DB
-    status = DataRepository.read_status_lampen()
-    emit('B2F_status_lampen', {'lampen': status}, broadcast=True)
+    # status = DataRepository.read_status_lampen()
+    # emit('B2F_status_lampen', {'lampen': status}, broadcast=True)
+
 
 
 @socketio.on('F2B_switch_light')
@@ -100,23 +101,31 @@ def switch_light(data):
         print(f"TV kamer moet switchen naar {new_status} !")
         GPIO.output(ledPin, new_status)
 
-@socketio.on("B2F_add_history")
+
+
+
 
 
 # START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
 # werk enkel met de packages gevent en gevent-websocket.
-def all_out():
+# def all_out():
+#     while True:
+#         print('*** We zetten alles uit **')
+#         DataRepository.update_status_alle_lampen(0)
+#         GPIO.output(ledPin, 0)
+#         status = DataRepository.read_status_lampen()
+#         socketio.emit('B2F_status_lampen', {'lampen': status})
+#         time.sleep(15)
+
+def main():
     while True:
-        print('*** We zetten alles uit **')
-        DataRepository.update_status_alle_lampen(0)
-        GPIO.output(ledPin, 0)
-        status = DataRepository.read_status_lampen()
-        socketio.emit('B2F_status_lampen', {'lampen': status})
-        time.sleep(15)
+            
+
+        pass
 
 def start_thread():
     print("**** Starting THREAD ****")
-    thread = threading.Thread(target=all_out, args=(), daemon=True)
+    thread = threading.Thread(target=main, args=(), daemon=True)
     thread.start()
 
 
@@ -157,11 +166,13 @@ def start_chrome_thread():
 def measuring():
     while True:
         # ultrasonic sensor
-        US_sensor.measure()
-        distance = US_sensor.distance
+        distance = US_sensor.measure()
+        print(distance)
+        socketio.emit('B2F_send_distance', {'distance': distance})
         DataRepository.Add_measurement(1, distance, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), add_comment(1, distance))
         
-        time.sleep(5)
+
+        time.sleep(1)
 
 
 

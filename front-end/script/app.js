@@ -63,9 +63,17 @@ const listenToSocket = function () {
       }
     }
   });
+  
   socket.on("B2F_verandering_lamp_from_HRDWR", function (jsonObject) {
     console.log(jsonObject)
   }) 
+
+  socket.on("B2F_send_distance", function (jsonObject){
+    console.log(jsonObject.distance)
+    const HTML_distance = document.querySelector(".js-distance");
+    htmlstirng = `${jsonObject.distance.toFixed(2)} cm`
+    HTML_distance.innerHTML = htmlstirng
+  });
 
 };
 
