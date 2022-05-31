@@ -4,6 +4,7 @@ from RPi import GPIO
 from helpers.klasseknop import Button
 from helpers.ultrasonic import Ultrasonic
 from helpers.addComment import add_comment
+from helpers.LCD import *
 import threading
 
 
@@ -188,6 +189,13 @@ def start_measure_thread():
 if __name__ == '__main__':
     try:
         setup_gpio()
+
+        #setup LCD
+        setup_LCD_and_shift()
+        init_LCD()
+        init_shiftreg()
+        write_page0() #IP
+
         # start_thread()
         start_chrome_thread()
         start_measure_thread()

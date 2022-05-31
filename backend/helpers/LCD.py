@@ -17,10 +17,9 @@ E = 24
 
 
 delay = 0.001
-statusDisplay = True
 page = 0
 
-def setup():
+def setup_LCD_and_shift():
     GPIO.setmode(GPIO.BCM)
     GPIO.setup([RS,E], GPIO.OUT) #LCD
     GPIO.setup([DS,OE,ST_CP,SH_CP,MR], GPIO.OUT, initial=GPIO.LOW) #Shiftregister
@@ -108,3 +107,20 @@ def next_page_LCD():
 def write_text(text):
     for char in text:
         send_char(ord(char))
+
+def set_cursor(row, position, page):
+    hexrow1 = 0x00 | (page) << 4
+    hexrow2 = 0x40 | (page) << 4
+    coords = 0
+    if row == 0:
+        coords = hexrow1 | (position)
+    else:
+        coords = hexrow2 | (position)
+    send_instruction(coords | 0x80)
+
+def write_page0(): #IP
+    ip = str(check_output(['hostname','--all-ip-addresses']))
+    ip = ip[18:33]
+    print(ip)
+    set_cursor(0,0,0)
+    write_text(ip)
