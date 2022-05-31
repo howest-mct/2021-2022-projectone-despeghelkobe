@@ -120,9 +120,7 @@ def switch_light(data):
 
 def main():
     while True:
-            
-
-        pass
+        time.sleep(0.0001)
 
 def start_thread():
     print("**** Starting THREAD ****")
@@ -156,7 +154,7 @@ def start_chrome_kiosk():
     driver = webdriver.Chrome(options=options)
     driver.get("http://localhost")
     while True:
-        pass
+        time.sleep(0.0001)
 
 
 def start_chrome_thread():
