@@ -71,8 +71,8 @@ const listenToSocket = function () {
   socket.on("B2F_send_distance", function (jsonObject){
     console.log(jsonObject.distance)
     const HTML_distance = document.querySelector(".js-distance");
-    htmlstirng = `${jsonObject.distance.toFixed(2)} cm`
-    HTML_distance.innerHTML = htmlstirng
+    htmlstring = `${jsonObject.distance.toFixed(2)} cm`
+    HTML_distance.innerHTML = htmlstring
   });
 
 };

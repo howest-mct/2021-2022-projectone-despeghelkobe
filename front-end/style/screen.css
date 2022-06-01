@@ -1,97 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;900&display=swap');
-@-webkit-keyframes move-left {
-  0% {
-    -webkit-transform: none;
-    transform: none;
-  }
-  65% {
-    -webkit-transform: translateX(-80px);
-    transform: translateX(-80px);
-  }
-  100% {
-    -webkit-transform: translateX(-80px);
-    transform: translateX(-80px);
-  }
-}
 
-@keyframes move-left {
-  0% {
-    -webkit-transform: none;
-    transform: none;
-  }
-  65% {
-    -webkit-transform: translateX(-80px);
-    transform: translateX(-80px);
-  }
-  100% {
-    -webkit-transform: translateX(-80px);
-    transform: translateX(-80px);
-  }
-}
-@-webkit-keyframes move-right {
-  0% {
-    -webkit-transform: none;
-    transform: none;
-  }
-  65% {
-    -webkit-transform: translateX(80px);
-    transform: translateX(80px);
-  }
-  100% {
-    -webkit-transform: translateX(80px);
-    transform: translateX(80px);
-  }
-}
-@keyframes move-right {
-  0% {
-    -webkit-transform: none;
-    transform: none;
-  }
-  65% {
-    -webkit-transform: translateX(80px);
-    transform: translateX(80px);
-  }
-  100% {
-    -webkit-transform: translateX(80px);
-    transform: translateX(80px);
-  }
-}
-@-webkit-keyframes width-to-zero {
-  0% {
-    width: 50px;
-  }
-  100% {
-    width: 11px;
-  }
-}
-@keyframes width-to-zero {
-  0% {
-    width: 50px;
-  }
-  100% {
-    width: 11px;
-  }
-}
-@-webkit-keyframes move-up {
-  100% {
-    bottom: 100.75px;
-  }
-}
-@keyframes move-up {
-  100% {
-    bottom: 100.75px;
-  }
-}
-@-webkit-keyframes move-down {
-  100% {
-    top: 100.75px;
-  }
-}
-@keyframes move-down {
-  100% {
-    top: 100.75px;
-  }
-}
 
 body,
 html {
@@ -99,11 +7,13 @@ html {
   width: 100%;
   margin: 0;
   padding: 0;
+  font-size: 30px;
 }
 
 body {
-  background: #aecad8;
-  transition: all 0.14s ease-in;
+  background: black;
+  color: white;
+  font-family: 'Open Sans', sans;
 }
 
 /* body.u-active {
@@ -122,5 +32,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
 }
+
+

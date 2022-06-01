@@ -1,0 +1,68 @@
+
+
+
+
+
+
+/*
+  components
+*/
+
+/*dashboard*/
+.c-dashboard{
+  background-color: black;
+  color: white;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+}
+
+.c-dashboard__pointer{
+  background: white;
+  position: absolute;
+  top: 48.5%;
+  right: 50%;
+  width: 46%;
+  height: 3%;
+  border: 1px solid black;
+  border-bottom-left-radius: 5rem 0.55rem;
+  border-top-left-radius: 5rem 0.55rem;
+}
+
+
+/*gauge*/
+.c-gauge{
+  background-color: #137;
+  height: 500px;
+  width: 500px;
+  border-radius: 100%;
+  position: relative;
+}
+
+
+/*didgit*/
+.c-didgit{
+  position: absolute;
+  top: 49.2%;
+  right: 50%;
+  width: 50%;
+  height: 2%;
+  border-left: 2rem solid white;
+  transform-origin: center right;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.c-didgit__label{
+  font-style: bold;
+  font-size: 2.5rem;
+  padding: 0.5rem;
+  text-shadow: 0.15rem 0.2rem 0.1rem black; 
+}
+
+
+
