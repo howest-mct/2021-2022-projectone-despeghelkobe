@@ -4,7 +4,8 @@ from RPi import GPIO
 from helpers.klasseknop import Button
 from helpers.ultrasonic import Ultrasonic
 from helpers.addComment import add_comment
-from helpers.LCD import *
+from backend.helpers.buzzerClass import Buzzer
+from helpers.LCDClass import ShiftAndLCD
 import threading
 
 
@@ -20,9 +21,10 @@ from selenium import webdriver
 
 
 ledPin = 21
-btnPin = Button(24)
 
 US_sensor = Ultrasonic(16,20)
+buzz = Buzzer(21)
+LCD = ShiftAndLCD(23,24,13,12,6,5,22)
 
 
 # Code voor Hardware
@@ -33,18 +35,6 @@ def setup_gpio():
     GPIO.setup(ledPin, GPIO.OUT)
     GPIO.output(ledPin, GPIO.LOW)
     
-
-    
-    btnPin.on_press(lees_knop)
-
-
-def lees_knop(pin):
-    if btnPin.pressed:
-        print("**** button pressed ****")
-        if GPIO.input(ledPin) == 1:
-            switch_light({'lamp_id': '3', 'new_status': 0})
-        else:
-            switch_light({'lamp_id': '3', 'new_status': 1})
 
 
 
@@ -189,10 +179,7 @@ if __name__ == '__main__':
         setup_gpio()
 
         #setup LCD
-        setup_LCD_and_shift()
-        init_LCD()
-        init_shiftreg()
-        write_page0() #IP
+        LCD.write_page0() #IP
 
         # start_thread()
         start_chrome_thread()

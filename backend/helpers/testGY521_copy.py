@@ -22,6 +22,7 @@ Device_Address = 0x68
 gyro_scale_factor = 16384.0
 accelero_scale_factor = 131.0
 sleep = 0.1
+prev_vel = 0
 
 
 def MPU_Init():
@@ -76,10 +77,12 @@ def refactor_data(valueList, scale_factor):
     return newValueList
 
 def calc_velocity(accel):
-    print(f"acceleration: {accel} g")
+    #print(f"acceleration: {accel} g")
     accel = accel*(9.8066*sleep)
-    final_vel = accel*sleep
-    print(f"velocity: {final_vel} m/s")
+    global prev_vel
+    vel = prev_vel + sleep*accel
+    print(f"velocity: {vel} m/s")
+    prev_vel = vel
 
 def calc_angle(angularSpeed):
     current_angle = prev_angle + angularSpeed*sleep
@@ -110,7 +113,7 @@ try:
         Gy = gyro_y/131.0
         Gz = gyro_z/131.0
 
-        calc_velocity(Az)
+        calc_velocity(Ay)
 
         calc_angle(Gx)
 
