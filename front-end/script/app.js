@@ -7,7 +7,14 @@ const clearClassList = function (el) {
 };
 
 const listenToUI = function () {
-  const knoppen = document.querySelectorAll(".js-power-btn");
+  const btn = document.querySelector(".js-btn");
+  btn.addEventListener("click", function(){
+    socket.emit("F2B_btn_click")
+    console.log("dirk")
+  })
+
+
+
   for (const knop of knoppen) {
     knop.addEventListener("click", function () {
       const id = this.dataset.idlamp;
