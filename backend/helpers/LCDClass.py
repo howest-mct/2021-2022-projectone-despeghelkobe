@@ -2,20 +2,9 @@ from RPi import GPIO
 import time
 from subprocess import check_output
 
-
-#shiftregister
-MR = 13 #active low
-SH_CP = 12
-ST_CP = 6
-OE = 5 #active low
-DS = 22
-
-
-
-delay = 0.001
-page = 0
-
 class ShiftAndLCD:
+    __delay = 0.001
+    __page = 0
     def __init__(self, RS, E, MR, SHCP, STCP, OE, DS):
         #LCD
         self.RS = RS
@@ -37,6 +26,8 @@ class ShiftAndLCD:
         self.init_shiftreg()
         self.init_LCD()
 
+    
+
 
     def init_shiftreg(self):
             self.reset_shiftreg()
@@ -53,17 +44,17 @@ class ShiftAndLCD:
 
     def reset_shiftreg(self):
         GPIO.output(self.MR, GPIO.LOW)
-        time.sleep(delay)
+        time.sleep(self.__delay)
         GPIO.output(self.MR, GPIO.HIGH)
 
     def send_bit_LCD(self, bit):
         GPIO.output(self.DS, bit)
-        time.sleep(delay)
+        time.sleep(self.__delay)
         GPIO.output(self.SH_CP, GPIO.HIGH)
-        time.sleep(delay)
+        time.sleep(self.__delay)
         GPIO.output(self.DS, GPIO.LOW)
         GPIO.output(self.SH_CP, GPIO.LOW)
-        time.sleep(delay)
+        time.sleep(self.__delay)
 
     def send_byte_LCD(self, byte):
         GPIO.output(self.E,GPIO.HIGH)
@@ -76,19 +67,19 @@ class ShiftAndLCD:
 
     def copy_to_storage_register(self):
         GPIO.output(self.ST_CP, GPIO.HIGH)
-        time.sleep(delay)
+        time.sleep(self.__delay)
         GPIO.output(self.ST_CP, GPIO.LOW)
-        time.sleep(delay)
+        time.sleep(self.__delay)
 
     def send_char(self, char):
         GPIO.output(self.RS, GPIO.HIGH)
         self.send_byte_LCD(char)
-        time.sleep(delay)
+        time.sleep(self.__delay)
     
     def send_instruction(self, instruction):
         GPIO.output(self.RS, GPIO.LOW)
         self.send_byte_LCD(instruction)
-        time.sleep(delay)
+        time.sleep(self.__delay)
 
     def write_text(self, text):
         for char in text:

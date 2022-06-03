@@ -1,19 +1,23 @@
 import time
 from datetime import datetime
 from RPi import GPIO
+#helpers
 from helpers.klasseknop import Button
 from helpers.ultrasonic import Ultrasonic
 from helpers.addComment import add_comment
 from helpers.buzzerClass import Buzzer
 from helpers.LCDClass import ShiftAndLCD
+from helpers.sendMeasurements import *
+
 import threading
 
-
+#flask
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, send
 from flask import Flask, jsonify
-from repositories.DataRepository import DataRepository
 
+
+from repositories.DataRepository import DataRepository
 from selenium import webdriver
 
 # from selenium import webdriver
@@ -25,13 +29,6 @@ ledPin = 21
 US_sensor = Ultrasonic(16,20)
 buzz = Buzzer(21)
 LCD = ShiftAndLCD(23,24,13,12,6,5,22)
-
-
-# Code voor Hardware
-def setup_gpio():
-    GPIO.setwarnings(False)
-    GPIO.setmode(GPIO.BCM)
-    
 
 # Code voor Flask
 
@@ -46,44 +43,10 @@ CORS(app)
 from helpers.socket import Socket
 Socket()
 
-@socketio.on_error()        # Handles the default namespace
-def error_handler(e):
-    print(e)
-# API ENDPOINTS
-@socketio.on('connect')
-def initial_connection():
-    print('A new client connect')
-
-import socket
-
 @app.route('/')
 def hallo():
+    print("hallo")
     return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
-
-# @socketio.on("F2B_btn_click")
-# def button():
-#     print("test")
-
-
-
-# @socketio.on('F2B_switch_light')
-# def switch_light(data):
-#     # Ophalen van de data
-#     lamp_id = data['lamp_id']
-#     new_status = data['new_status']
-#     print(f"Lamp {lamp_id} wordt geswitcht naar {new_status}")
-
-#     # Stel de status in op de DB
-#     res = DataRepository.update_status_lamp(lamp_id, new_status)
-
-#     # Vraag de (nieuwe) status op van de lamp en stuur deze naar de frontend.
-#     data = DataRepository.read_status_lamp_by_id(lamp_id)
-#     socketio.emit('B2F_verandering_lamp', {'lamp': data}, broadcast=True)
-
-#     # Indien het om de lamp van de TV kamer gaat, dan moeten we ook de hardware aansturen.
-#     if lamp_id == '3':
-#         print(f"TV kamer moet switchen naar {new_status} !")
-#         GPIO.output(ledPin, new_status)
 
 
 def main():
@@ -124,7 +87,6 @@ def start_chrome_kiosk():
     while True:
         time.sleep(0.0001)
 
-
 def start_chrome_thread():
     print("**** Starting CHROME ****")
     chromeThread = threading.Thread(target=start_chrome_kiosk, args=(), daemon=True)
@@ -135,13 +97,11 @@ def measuring():
         # ultrasonic sensor
         distance = US_sensor.measure()
         print(distance)
-        socketio.emit('B2F_send_distance', {'distance': distance})
-        DataRepository.Add_measurement(1, distance, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), add_comment(1, distance))
-        
+        Socket.emit_distance(distance)
+        send_measurements_to_DB(distance, "ultrasonic")
+        print("meet")
 
         time.sleep(1)
-
-
 
 def start_measure_thread():
     print("***starting measurements***")
@@ -154,8 +114,6 @@ def start_measure_thread():
 
 if __name__ == '__main__':
     try:
-        setup_gpio()
-
         #setup LCD
         LCD.write_page0() #IP
 
