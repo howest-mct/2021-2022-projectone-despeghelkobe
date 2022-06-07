@@ -3,11 +3,12 @@ from datetime import datetime
 from RPi import GPIO
 #helpers
 from helpers.klasseknop import Button
-from helpers.ultrasonic import Ultrasonic
+from backend.helpers.ultrasonicClass import Ultrasonic
 from helpers.addComment import add_comment
 from helpers.buzzerClass import Buzzer
 from helpers.LCDClass import ShiftAndLCD
 from helpers.sendMeasurements import *
+from helpers.mcp3008Class import MCP3008
 
 import threading
 
@@ -29,6 +30,7 @@ ledPin = 21
 US_sensor = Ultrasonic(16,20)
 buzz = Buzzer(21)
 LCD = ShiftAndLCD(23,24,13,12,6,5,22)
+MCP = MCP3008(0,0)
 
 # Code voor Flask
 
@@ -47,17 +49,6 @@ Socket()
 def hallo():
     print("hallo")
     return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
-
-
-def main():
-    while True:
-        time.sleep(0.0001)
-
-def start_thread():
-    print("**** Starting THREAD ****")
-    thread = threading.Thread(target=main, args=(), daemon=True)
-    thread.start()
-
 
 def start_chrome_kiosk():
     import os
@@ -96,10 +87,12 @@ def measuring():
     while True:
         # ultrasonic sensor
         distance = US_sensor.measure()
-        print(distance)
+        print(f"{distance} cm")
         Socket.emit_distance(distance)
         send_measurements_to_DB(distance, "ultrasonic")
-        print("meet")
+        voltage = MCP.read(0)
+        print(f"{voltage/40.92} V")
+
 
         time.sleep(1)
 
@@ -116,8 +109,6 @@ if __name__ == '__main__':
     try:
         #setup LCD
         LCD.write_page0() #IP
-
-        # start_thread()
         start_chrome_thread()
         start_measure_thread()
         print("**** Starting APP ****")
