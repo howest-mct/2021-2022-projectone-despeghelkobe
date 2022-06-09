@@ -1,7 +1,15 @@
-from flask_socketio import emit, Namespace
-from __main__ import socketio
+from flask_cors import CORS
+from flask_socketio import SocketIO, emit, send
+from flask import Flask, jsonify
 
-class Socket(Namespace):
+
+
+
+class Socket:
+    
+    
+
+
     #events
     @socketio.on_error()        # Handles the default namespace
     def error_handler(e):
@@ -17,5 +25,8 @@ class Socket(Namespace):
 
 
     #emits
-    def emit_distance(value):
-        socketio.emit('B2F_send_distance', {'distance': value})
+    def emit_distance(self, value):
+        self.socketio.emit('B2F_send_distance', {'distance': value})
+    
+    def emit_wallCrash(self):
+        self.socketio.emit('B2F_wall_crash')

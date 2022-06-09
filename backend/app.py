@@ -3,12 +3,13 @@ from datetime import datetime
 from RPi import GPIO
 #helpers
 from helpers.klasseknop import Button
-from backend.helpers.ultrasonicClass import Ultrasonic
+from helpers.ultrasonicClass import Ultrasonic
 from helpers.addComment import add_comment
 from helpers.buzzerClass import Buzzer
 from helpers.LCDClass import ShiftAndLCD
 from helpers.sendMeasurements import *
 from helpers.mcp3008Class import MCP3008
+from helpers.relayClass import Relay
 
 import threading
 
@@ -28,22 +29,42 @@ from selenium import webdriver
 ledPin = 21
 
 US_sensor = Ultrasonic(16,20)
-buzz = Buzzer(21)
 LCD = ShiftAndLCD(23,24,13,12,6,5,22)
 MCP = MCP3008(0,0)
+valveRelay = Relay(19)
 
-# Code voor Flask
+#region Code for Flask
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'geheim!'
 socketio = SocketIO(app, cors_allowed_origins="*", logger=False,
                     engineio_logger=False, ping_timeout=1)
-
 CORS(app)
 
+#events
+@socketio.on_error()        # Handles the default namespace
+def error_handler(e):
+    print(e)
+# API ENDPOINTS
+@socketio.on('connect')
+def initial_connection():
+    print('A new client connect')
 
-from helpers.socket import Socket
-Socket()
+@socketio.on("F2B_boost")
+def button():
+    valveRelay.circuitbreaker(1.5)
+
+#emits
+def emit_wallCrash():
+    socketio.emit('B2F_wall_crash')
+
+def emit_voltage(value):
+    socketio.emit('B2F_send_voltage', {'voltage': value})
+
+def emit_upsideDown():
+    socketio.emit('B2F_upside_down')
+#endregion
+
 
 @app.route('/')
 def hallo():
@@ -85,21 +106,24 @@ def start_chrome_thread():
 
 def measuring():
     while True:
+        print("hi")
         # ultrasonic sensor
         distance = US_sensor.measure()
         print(f"{distance} cm")
-        Socket.emit_distance(distance)
-        send_measurements_to_DB(distance, "ultrasonic")
+        sensor_and_actuator_comms(distance, "ultrasonic")
+
         voltage = MCP.read(0)
         print(f"{voltage/40.92} V")
-
+        sensor_and_actuator_comms(voltage, "volt")
 
         time.sleep(1)
+        
 
 def start_measure_thread():
     print("***starting measurements***")
     measureThread = threading.Thread(target=measuring, args=(), daemon=True)
     measureThread.start()
+    measureThread.join()
 
 
 # ANDERE FUNCTIES
@@ -109,10 +133,12 @@ if __name__ == '__main__':
     try:
         #setup LCD
         LCD.write_page0() #IP
+        valveRelay.on()
+        time.sleep(1)
+        valveRelay.off()
         start_chrome_thread()
         start_measure_thread()
         print("**** Starting APP ****")
-        socketio.run(app, host='0.0.0.0')
     except KeyboardInterrupt:
         print ('KeyboardInterrupt exception is caught')
     finally:

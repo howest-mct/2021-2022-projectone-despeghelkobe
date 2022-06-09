@@ -39,3 +39,9 @@ class DataRepository:
         sql = "INSERT INTO History (actions_id, device_id, datetime, value, comment) VALUES (1, %s, %s, %s, %s)"
         params = [device_id, time, data, comment]
         return Database.execute_sql(sql, params)
+
+    @staticmethod
+    def Add_excecute(device_id,time, comment):
+        sql = "INSERT INTO History (actions_id, device_id, datetime, comment) VALUES (2, %s, %s, %s)"
+        params = [device_id, time, comment]
+        return Database.execute_sql(sql, params)
