@@ -30,6 +30,7 @@
   border: 1px solid black;
   border-bottom-left-radius: 5rem 0.55rem;
   border-top-left-radius: 5rem 0.55rem;
+  transform-origin: right center;
 }
 
 
