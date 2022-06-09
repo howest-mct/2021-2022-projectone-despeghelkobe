@@ -45,14 +45,26 @@ CORS(app)
 @socketio.on_error()        # Handles the default namespace
 def error_handler(e):
     print(e)
+
+
 # API ENDPOINTS
+@app.route('/')
+def hallo():
+    print("hallo")
+    return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
+
+@app.route('/logs')
+def logs():
+    DataRepository.read_history()
+
 @socketio.on('connect')
 def initial_connection():
     print('A new client connect')
 
 @socketio.on("F2B_boost")
 def button():
-    valveRelay.circuitbreaker(1.5)
+    # valveRelay.circuitbreaker(1.5)
+    print("joost")
 
 #emits
 def emit_wallCrash():
@@ -66,10 +78,7 @@ def emit_upsideDown():
 #endregion
 
 
-@app.route('/')
-def hallo():
-    print("hallo")
-    return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
+
 
 def start_chrome_kiosk():
     import os
@@ -106,7 +115,6 @@ def start_chrome_thread():
 
 def measuring():
     while True:
-        print("hi")
         # ultrasonic sensor
         distance = US_sensor.measure()
         print(f"{distance} cm")
@@ -139,6 +147,7 @@ if __name__ == '__main__':
         start_chrome_thread()
         start_measure_thread()
         print("**** Starting APP ****")
+        socketio.run(app, debug=False, host="0.0.0.0")
     except KeyboardInterrupt:
         print ('KeyboardInterrupt exception is caught')
     finally:

@@ -1,5 +1,5 @@
 const lanIP = `${window.location.hostname}:5000`;
-const socket = io(`http://${lanIP}`);
+const socket = io.connect(`http://${lanIP}`);
 
 const initDashboard = function(){
   const didgits = document.querySelectorAll(".js-didgit")
@@ -9,7 +9,6 @@ const initDashboard = function(){
   i=0
   starting_degree = -15
   splits = (180 + (-starting_degree*2)) / (didgit_count-1)
-  console.log(-starting_degree*2)
   
   
   // show labels on correct position on the site
@@ -42,13 +41,11 @@ const initDashboard = function(){
 // };
 
 const listenToUI = function () {
-  const btn = document.querySelector(".js-btn");
-  btn.addEventListener("click", function(){
-    socket.emit("F2B_btn_click")
-    console.log("dirk")
+  const boost = document.querySelector(".js-boost");
+  boost.addEventListener("click", function(){
+    socket.send("F2B_boost")
+    console.log("boost")
   })
-
-
 
   // for (const knop of knoppen) {
   //   knop.addEventListener("click", function () {
@@ -71,6 +68,10 @@ const listenToSocket = function () {
   socket.on("connected", function () {
     console.log("verbonden met socket webserver");
   });
+
+  socket.on("B2F_wall_crash", function(){
+    console.log("wallcrash")
+  })
 
   // socket.on("B2F_status_lampen", function (jsonObject) {
   //   console.log("alle lampen zijn automatisch uitgezet");
