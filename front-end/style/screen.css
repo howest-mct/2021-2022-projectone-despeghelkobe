@@ -29,9 +29,10 @@ td{
   padding: none;
 }
 
-/* body.u-active {
-  background: #f3f7f9;
-} */
+table{
+  border-collapse: collapse;
+}
+
 
 .o-container {
   display: flex;
@@ -163,7 +164,9 @@ td{
 
 .c-logs{
   grid-row: 2;
-
+  max-height: 100%;
+  position: relative;
+  overflow-y: scroll;
 }
 
 .c-logs__table{
@@ -172,11 +175,20 @@ td{
 
 .c-logs__table th + th,
 .c-logs__table td + td{
-  border-left: 1px solid white;
+  border-left: 0.5px solid white;
 }
+
+
 
 .c-logs__table th{
   border-bottom: 1px solid white;
+}
+
+.c-logs__table thead{
+  position: sticky;
+  background-color: black;
+  top: 0;
+  z-index: 1;
 }
 
 .c-button__boost{

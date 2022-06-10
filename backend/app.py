@@ -53,9 +53,11 @@ def hallo():
     print("hallo")
     return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
 
-@app.route('/logs')
+@app.route('/logs', methods=['GET'])
 def logs():
-    DataRepository.read_history()
+    data = DataRepository.read_history()
+    return jsonify(data)
+
 
 @socketio.on('connect')
 def initial_connection():
@@ -117,11 +119,11 @@ def measuring():
     while True:
         # ultrasonic sensor
         distance = US_sensor.measure()
-        print(f"{distance} cm")
+        # print(f"{distance} cm")
         sensor_and_actuator_comms(distance, "ultrasonic")
 
         voltage = MCP.read(0)
-        print(f"{voltage/40.92} V")
+        # print(f"{voltage/40.92} V")
         sensor_and_actuator_comms(voltage, "volt")
 
         time.sleep(1)
@@ -131,7 +133,7 @@ def start_measure_thread():
     print("***starting measurements***")
     measureThread = threading.Thread(target=measuring, args=(), daemon=True)
     measureThread.start()
-    measureThread.join()
+    # measureThread.join()
 
 
 # ANDERE FUNCTIES

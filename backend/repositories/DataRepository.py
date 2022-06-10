@@ -12,10 +12,10 @@ class DataRepository:
 
     @staticmethod
     def read_history():
-        sql = "SELECT a.action_description , d.name, h.datetime, h.value, h.comment FROM carcontrol.History as h"
-        sql += "inner join carcontrol.Actions as a on h.actions_id = a.actions_id"
-        sql += "inner join carcontrol.Devices as d on h.device_id = d.device_id"
-        sql += "order by datetime desc"
+        sql = "SELECT a.action_description , d.name, h.datetime, h.value, h.comment FROM carcontrol.History as h "
+        sql += "inner join carcontrol.Actions as a on h.actions_id = a.actions_id "
+        sql += "inner join carcontrol.Devices as d on h.device_id = d.device_id "
+        sql += "order by datetime desc "
         sql += "limit 50;"
         return Database.get_rows(sql)
 
