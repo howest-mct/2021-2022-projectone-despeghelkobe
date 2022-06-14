@@ -27,10 +27,9 @@ def sensor_and_actuator_comms(value, sensor):
         if value < 20:
             comment = "powering off off to avoid crash with wall"
             DataRepository.Add_excecute(carmotorRelay_id, now, "turning the motor off to avoid crashing into a wall")
-            main.emit_wallCrash()
             motorRelay.circuitbreaker(4)
-
         DataRepository.Add_measurement(ultrasonic_id, value, now, comment)
+        main.emit_ultrasonic(value)
 
     if sensor == 'volt':
         if value < 4:

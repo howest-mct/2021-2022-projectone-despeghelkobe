@@ -1,6 +1,7 @@
 import time
 from datetime import datetime
 from RPi import GPIO
+import os
 #helpers
 from helpers.klasseknop import Button
 from helpers.ultrasonicClass import Ultrasonic
@@ -68,15 +69,21 @@ def button():
     # valveRelay.circuitbreaker(1.5)
     print("joost")
 
+@socketio.on("F2B_power_off")
+def power_off():
+    print("shutting down")
+    GPIO.cleanup()
+    os.system("sudo shutdown -h now")
+
 #emits
-def emit_wallCrash():
-    socketio.emit('B2F_wall_crash')
+def emit_ultrasonic(value):
+    socketio.emit('B2F_send_ultrasonic', {'distance': value})
 
 def emit_voltage(value):
     socketio.emit('B2F_send_voltage', {'voltage': value})
 
-def emit_upsideDown():
-    socketio.emit('B2F_upside_down')
+def emit_tilt(value):
+    socketio.emit('B2F_send_tilt', {'degrees': value})
 #endregion
 
 
@@ -122,7 +129,7 @@ def measuring():
         # print(f"{distance} cm")
         sensor_and_actuator_comms(distance, "ultrasonic")
 
-        voltage = MCP.read(0)
+        voltage = MCP.read(0)/40.92
         # print(f"{voltage/40.92} V")
         sensor_and_actuator_comms(voltage, "volt")
 

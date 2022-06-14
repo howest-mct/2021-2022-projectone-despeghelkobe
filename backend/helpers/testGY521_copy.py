@@ -1,5 +1,6 @@
 import smbus			#import SMBus module of I2C
 import time         #import
+import datetime
 
  
 # Register
@@ -76,17 +77,29 @@ def refactor_data(valueList, scale_factor):
         newValueList.append(value/scale_factor)
     return newValueList
 
-def calc_velocity(accel):
-    #print(f"acceleration: {accel} g")
-    accel = accel*(9.8066*sleep)
-    global prev_vel
-    vel = prev_vel + sleep*accel
-    print(f"velocity: {vel} m/s")
-    prev_vel = vel
+# def calc_velocity(accel):
+#     #print(f"acceleration: {accel} g")
+#     accel = accel*(9.8066*sleep)
+#     global prev_vel
+#     vel = prev_vel + sleep*accel
+#     print(f"velocity: {vel} m/s")
+#     prev_vel = vel
 
+prev_time = 0
+curr_angle = 0
 def calc_angle(angularSpeed):
-    current_angle = prev_angle + angularSpeed*sleep
-    #print(current_angle)
+    global prev_time, curr_angle
+    curr_time = datetime.datetime.now()
+    if prev_time != 0:
+        delta_time = curr_time - prev_time
+        delta_time = delta_time.total_seconds()
+        # print(delta_time)
+        delta_angle = angularSpeed * delta_time
+        # delta_angle = angularSpeed * 0.0001
+        # print(delta_angle)
+        curr_angle = curr_angle + delta_angle
+        # print(curr_angle)
+    prev_time = curr_time
 
 
 
@@ -95,9 +108,9 @@ try:
     prev_angle = 0
     while True:
         #Read Accelerometer raw value
-        acc_x = read_raw_data(ACCEL_XOUT_H)
-        acc_y = read_raw_data(ACCEL_YOUT_H)
-        acc_z = read_raw_data(ACCEL_ZOUT_H)
+        # acc_x = read_raw_data(ACCEL_XOUT_H)
+        # acc_y = read_raw_data(ACCEL_YOUT_H)
+        # acc_z = read_raw_data(ACCEL_ZOUT_H)
         
         #Read Gyroscope raw value
         gyro_x = read_raw_data(GYRO_XOUT_H)
@@ -105,20 +118,21 @@ try:
         gyro_z = read_raw_data(GYRO_ZOUT_H)
         
         #Full scale range +/- 250 degree/C as per sensitivity scale factor
-        Ax = acc_x/16384.0
-        Ay = acc_y/16384.0
-        Az = acc_z/16384.0
+        # Ax = acc_x/16384.0
+        # Ay = acc_y/16384.0
+        # Az = acc_z/16384.0
         
         Gx = gyro_x/131.0
         Gy = gyro_y/131.0
         Gz = gyro_z/131.0
 
-        calc_velocity(Ay)
-
-        calc_angle(Gx)
-
+        # print(Gx)
+        # print(round(Gx,2))
+        angle = calc_angle(round(Gx,2))
+        print(angle)
+        time.sleep(0.0001)
         #print(f"Gx={Gx} °/s \tGy={Gy} °/s \tGz={Gz} °/s \nAx={Ax} g \tAy={Ay} g \tAz={Az} g")
-        time.sleep(sleep)
+        
 
 except KeyboardInterrupt:
     print("exception caught")
