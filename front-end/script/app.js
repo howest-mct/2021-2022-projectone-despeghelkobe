@@ -1,27 +1,89 @@
 const lanIP = `${window.location.hostname}:5000`;
-const socket = io(`http://${lanIP}`);
+const socket = io.connect(`http://${lanIP}`);
 
-const clearClassList = function (el) {
-  el.classList.remove("c-room--wait");
-  el.classList.remove("c-room--on");
-};
+const initDashboard = function(){
+  const didgits = document.querySelectorAll(".js-didgit")
+  const labels = document.querySelectorAll(".js-label")
+  const pointer = document.querySelector(".js-pointer")
+  didgit_count = didgits.length
+  i=0
+  starting_degree = -15
+  splits = (180 + (-starting_degree*2)) / (didgit_count-1)
+  
+  
+  // show labels on correct position on the site
+  for(const didgit of didgits){
+    degrees = (splits*i)+ starting_degree
+    speed = 20*i
+    didgit.style.transform = `rotate(${degrees}deg)`
+    i++
+  }
+
+  i=0
+  //show lines on correct position on the site
+  for(const label of labels){
+    speed = 20*i
+    degrees = (splits*i)+ starting_degree
+    label.innerHTML = speed
+    label.style.transform = `rotate(${-degrees}deg)`
+    i++
+  }
+
+  //show pointer on starting angle on the site 
+  pointer.style.transform = `rotate(${starting_degree}deg)`
+}
+
+const initTable = async function(){
+  table = document.querySelector(".js-tbody");
+
+  data = await getLogsData()
+  i = 0
+  for(const row of data){
+      let color = ""
+      if(i%2 == 0){
+          color = "#113377"
+      }
+      table.innerHTML += `<tr style="background-color: ${color}">
+                              <td>${new Date(row.datetime).toLocaleString()}</td>
+                              <td>${row.name}</td>
+                              <td>${row.action_description}</td>
+                              <td>${((row.value == null) ? row.value : row.value.toFixed(2))}</td>
+                              <td>${row.comment}</td>
+                          </tr>`
+      i++
+  }
+      
+}
+
+async function getLogsData(){
+  let response = await fetch(`http://${lanIP}/logs`)
+  let data = await response.json()
+  // console.log(data)
+  return data
+}
+
 
 const listenToUI = function () {
-  const knoppen = document.querySelectorAll(".js-power-btn");
-  for (const knop of knoppen) {
-    knop.addEventListener("click", function () {
-      const id = this.dataset.idlamp;
-      let nieuweStatus;
-      if (this.dataset.statuslamp == 0) {
-        nieuweStatus = 1;
-      } else {
-        nieuweStatus = 0;
-      }
-      //const statusOmgekeerd = !status;
-      clearClassList(document.querySelector(`.js-room[data-idlamp="${id}"]`));
-      document.querySelector(`.js-room[data-idlamp="${id}"]`).classList.add("c-room--wait");
-      socket.emit("F2B_switch_light", { lamp_id: id, new_status: nieuweStatus });
-    });
+  const boost = document.querySelector(".js-boost");
+  boost.addEventListener("click", function(){
+    socket.send("F2B_boost")
+    console.log("boost")
+  })
+
+  power_off = document.querySelector(".js-power-off")
+  power_off.addEventListener("click", function(){
+    console.log("dave")
+    // socket.emit("F2B_power_off")
+  })
+
+  window.onresize = function(){
+    logs = document.querySelector(".js-logs")
+    width = window.innerWidth
+    if(width < 1024){
+      logs.style.display = "none"
+    }else{
+      logs.style.display = "block"
+    }
   }
 };
 
@@ -30,47 +92,51 @@ const listenToSocket = function () {
     console.log("verbonden met socket webserver");
   });
 
-  socket.on("B2F_status_lampen", function (jsonObject) {
-    console.log("alle lampen zijn automatisch uitgezet");
-    console.log("Dit is de status van de lampen");
-    console.log(jsonObject);
-    for (const lamp of jsonObject.lampen) {
-      const room = document.querySelector(`.js-room[data-idlamp="${lamp.id}"]`);
-      if (room) {
-        const knop = room.querySelector(".js-power-btn");
-        knop.dataset.statuslamp = lamp.status;
-        clearClassList(room);
-        if (lamp.status == 1) {
-          room.classList.add("c-room--on");
-        }
+  socket.on("B2F_send_ultrasonic", function(jsonObject){
+    distance = jsonObject.distance
+    icon = document.querySelectorAll('.js-car_crash path')
+    if(distance < 20){
+      for(const path of icon){
+        path.style.fill = "red"
+      }
+    }else{
+      for(const path of icon){
+        path.style.fill = "white"
       }
     }
-  });
+    
+  })
 
-  socket.on("B2F_verandering_lamp", function (jsonObject) {
-    console.log("Er is een status van een lamp veranderd");
-    console.log(jsonObject.lamp.id);
-    console.log(jsonObject.lamp.status);
+  socket.on("B2F_send_voltage", function(jsonObject){
+    voltage = jsonObject.voltage
+    icon = document.querySelector(".js-low_fuel path")
+    if(voltage < 4){
+     icon.style.fill = "red"
+    }else{
+      icon.style.fill = "white"
+    }
+  })
 
-    const room = document.querySelector(`.js-room[data-idlamp="${jsonObject.lamp.id}"]`);
-    if (room) {
-      const knop = room.querySelector(".js-power-btn"); //spreek de room, als start. Zodat je enkel knop krijgt die in de room staat
-      knop.dataset.statuslamp = jsonObject.lamp.status;
-
-      clearClassList(room);
-      if (jsonObject.lamp.status == 1) {
-        room.classList.add("c-room--on");
+  socket.on("B2F_send_tilt", function(jsonObject){
+    degrees = jsonObject.degrees
+    icon = document.querySelectorAll(".js-upside_down path")
+    if(degrees > 90 && degrees < -90){
+      for (const path in icon){
+        path.style.fill = "red"
+      }
+    }else{
+      for (const path in icon){
+        path.style.fill = "white"
       }
     }
-  });
-  socket.on("B2F_verandering_lamp_from_HRDWR", function (jsonObject) {
-    console.log(jsonObject)
-  }) 
-
+  })
+ 
 };
 
 document.addEventListener("DOMContentLoaded", function () {
   console.info("DOM geladen");
+  initDashboard();
+  initTable();
   listenToUI();
   listenToSocket();
 });

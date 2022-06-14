@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>car control</title>
+  <link rel="icon" href="./img/favicon.png">
+  <link rel="stylesheet" href="style/screen.css" />
+  <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"
+    integrity="sha384-LzhRnpGmQP+lOvWruF/lgkcqD+WDVt9fU3H4BWmwP5u5LTmkUGafMcpZKNObVMLU"
+    crossorigin="anonymous"></script>
+  <script src="script/app.js"></script>
+</head>
+
+<body>
+  <div class="c-app c-app__index">
+    <header class="c-header">
+      <h1 class="c-header__title">RC-car</h1>
+      <div class="c-header__power-off js-power-off">
+        <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+        x="0px" y="0px" viewBox="0 0 198.715 198.715" style="enable-background:new 0 0 198.715 198.715;"
+        xml:space="preserve">
+        <g>
+          <path d="M161.463,48.763c-2.929-2.929-7.677-2.929-10.607,0c-2.929,2.929-2.929,7.677,0,10.606
+      c13.763,13.763,21.342,32.062,21.342,51.526c0,19.463-7.579,37.761-21.342,51.523c-14.203,14.204-32.857,21.305-51.516,21.303
+      c-18.659-0.001-37.322-7.104-51.527-21.309c-28.405-28.405-28.402-74.625,0.005-103.032c2.929-2.929,2.929-7.678,0-10.606
+      c-2.929-2.929-7.677-2.929-10.607,0C2.956,83.029,2.953,138.766,37.206,173.019c17.132,17.132,39.632,25.697,62.135,25.696
+      c22.497-0.001,44.997-8.564,62.123-25.69c16.595-16.594,25.734-38.659,25.734-62.129C187.199,87.425,178.059,65.359,161.463,48.763
+            z"/>
+          <path d="M99.332,97.164c4.143,0,7.5-3.358,7.5-7.5V7.5c0-4.142-3.357-7.5-7.5-7.5s-7.5,3.358-7.5,7.5v82.164
+            C91.832,93.807,95.189,97.164,99.332,97.164z"/>
+        </g>
+        </svg>
+      </div>
+    </header>
+    <div class="c-logs js-logs">
+      <table class="c-logs__table">
+          <thead>
+             <tr>
+                  <th>time</th>
+                  <th>device</th>
+                  <th>action</th>
+                  <th>value</th>
+                  <th>comment</th>
+              </tr> 
+          </thead>
+          <tbody class="js-tbody">
+          </tbody>
+      </table>
+    </div>
+
+    <div class="c-dashboard">
+      <div class="c-gauge">
+        <div class="c-speedometer">
+          <div class="c-didgit js-didgit">
+            <div class="c-didgit__line"></div>
+            <div class="c-didgit__label js-label"></div>
+          </div>
+          <div class="c-didgit js-didgit">
+            <span class="c-didgit__line"></span>
+            <div class="c-didgit__label js-label"></div>
+          </div>
+          <div class="c-didgit js-didgit">
+            <span class="c-didgit__line"></span>
+            <div class="c-didgit__label js-label"></div>
+          </div>
+          <div class="c-didgit js-didgit">
+            <span class="c-didgit__line"></span>
+            <div class="c-didgit__label js-label"></div>
+          </div>
+          <div class="c-didgit js-didgit">
+            <span class="c-didgit__line"></span>
+            <div class="c-didgit__label js-label"></div>
+          </div>
+          <div class="c-didgit js-didgit">
+            <span class="c-didgit__line"></span>
+            <div class="c-didgit__label js-label"></div>
+          </div>
+          <div class="c-didgit js-didgit">
+            <span class="c-didgit__line"></span>
+            <div class="c-didgit__label js-label"></div>
+          </div>
+          <div class="c-didgit js-didgit">
+            <span class="c-didgit__line"></span>
+            <div class="c-didgit__label js-label"></div>
+          </div>
+          <div class="c-didgit js-didgit">
+            <span class="c-didgit__line"></span>
+            <div class="c-didgit__label js-label"></div>
+          </div>
+          <div class="c-dashboard__pointer js-pointer"></div>
+        </div>
+      </div>
+      <div class="c-paradise">
+        <svg class="c-paradise__icon js-upside_down" id="car_upside_down_icon" data-name="car upside down icon"
+          xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+          <rect id="Rectangle_3" data-name="Rectangle 3" width="32" height="32" transform="translate(0)" fill="none" />
+          <g id="car-svgrepo-com" transform="translate(0 1.391)">
+            <path id="Path_47" data-name="Path 47"
+              d="M1.042,0A1.042,1.042,0,1,0,2.084,1.042,1.043,1.043,0,0,0,1.042,0Zm0,1.459a.418.418,0,1,1,.418-.418A.418.418,0,0,1,1.042,1.459Z"
+              transform="matrix(-0.848, 0.53, -0.53, -0.848, 21.706, 4.428)" fill="#fff" />
+            <path id="Path_48" data-name="Path 48"
+              d="M1.042,0A1.042,1.042,0,1,0,2.084,1.042,1.043,1.043,0,0,0,1.042,0Zm0,1.459a.418.418,0,1,1,.418-.418A.418.418,0,0,1,1.042,1.459Z"
+              transform="matrix(-0.848, 0.53, -0.53, -0.848, 7.997, 14.032)" fill="#fff" />
+            <path id="Path_49" data-name="Path 49"
+              d="M24.628,5.91,20.6,5.432,18.451,1.8A3.629,3.629,0,0,0,15.357,0H8.045A4.73,4.73,0,0,0,3.527,3.579l-.057.216A3.081,3.081,0,0,1,1.391,5.97,1.983,1.983,0,0,0,0,7.881v5.195a.461.461,0,0,0,.451.469h2.32a3.061,3.061,0,0,0,2.961,2.5,3.061,3.061,0,0,0,2.961-2.5h9.832a3,3,0,0,0,5.921,0h2.436a.458.458,0,0,0,.448-.416l.354-3.222A3.586,3.586,0,0,0,24.628,5.91ZM.9,12.036H2.825a3.238,3.238,0,0,0-.1.57H.9Zm4.83,3.072a2.208,2.208,0,0,1,0-4.412,2.208,2.208,0,0,1,0,4.412Zm15.753,0A2.208,2.208,0,1,1,23.607,12.9,2.168,2.168,0,0,1,21.486,15.108Zm0-5.351a2.99,2.99,0,0,0-2.475,1.34H10.979a.47.47,0,0,0,0,.939h7.6a3.238,3.238,0,0,0-.1.57H8.743A3.077,3.077,0,0,0,5.732,9.757,2.99,2.99,0,0,0,3.258,11.1H.9V7.881a1.045,1.045,0,0,1,.733-1.007,4.008,4.008,0,0,0,2.7-2.83L4.4,3.828A3.819,3.819,0,0,1,8.045.939h7.312A2.727,2.727,0,0,1,17.683,2.29l2.264,3.828a.45.45,0,0,0,.333.22l4.245.5a2.589,2.589,0,0,1,2.086,1.644H25.2a.47.47,0,0,0,0,.939h1.6a2.791,2.791,0,0,1-.015.375l-.142,1.3H23.96A2.99,2.99,0,0,0,21.486,9.757ZM24.5,12.606a3.232,3.232,0,0,0-.1-.57h2.149l-.063.57Z"
+              transform="matrix(-0.848, 0.53, -0.53, -0.848, 32, 13.608)" fill="#fff" />
+            <path id="Path_50" data-name="Path 50" d="M.968,0H.312a.312.312,0,1,0,0,.624H.968A.312.312,0,0,0,.968,0Z"
+              transform="matrix(-0.848, 0.53, -0.53, -0.848, 16.049, 15.046)" fill="#fff" />
+            <path id="Path_51" data-name="Path 51"
+              d="M1.28.312A.312.312,0,0,0,.968,0H.312a.312.312,0,1,0,0,.624H.968A.312.312,0,0,0,1.28.312Z"
+              transform="matrix(-0.848, 0.53, -0.53, -0.848, 21.691, 11.522)" fill="#fff" />
+            <path id="Path_52" data-name="Path 52"
+              d="M.6.193A.315.315,0,0,0,.267,0a.315.315,0,0,0-.259.24A.314.314,0,0,0,.488.57.314.314,0,0,0,.6.193Z"
+              transform="matrix(-0.848, 0.53, -0.53, -0.848, 18.289, 8.828)" fill="#fff" />
+            <path id="Path_53" data-name="Path 53"
+              d="M8.808.717A1.515,1.515,0,0,0,7.524,0H2.469A2.239,2.239,0,0,0,.316,1.641l-.039.143C.174,2.157.016,2.8.009,2.824a.312.312,0,0,0,.3.387H9.783a.312.312,0,0,0,.266-.476ZM5.2.624V2.587H2.329V.63c.046,0,.093-.006.14-.006ZM.878,1.949l.039-.143A1.611,1.611,0,0,1,1.7.818V2.587H.712C.765,2.379.829,2.129.878,1.949Zm4.948.637V.624h1.7a.887.887,0,0,1,.751.42l.949,1.542Z"
+              transform="matrix(-0.848, 0.53, -0.53, -0.848, 26.282, 15.902)" fill="#fff" />
+            <path id="Path_54" data-name="Path 54" d="M.3,0H29.7a.3.3,0,0,1,0,.6H.3A.3.3,0,0,1,.3,0Z"
+              transform="translate(1 22.009)" fill="#fff" />
+          </g>
+        </svg>
+        <svg class="c-paradise__icon js-car_crash" id="car_crash_icon" data-name="car crash icon"
+          xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+          <rect id="background" width="32" height="32" fill="none" />
+          <g id="car-crash-svgrepo-com" transform="translate(5.323 8)">
+            <path id="Path_42" data-name="Path 42"
+              d="M21.155,53.733H18.2a.2.2,0,0,0-.2.2V65.121a.86.86,0,0,0-.437-.25l-.179-.336a.2.2,0,0,0-.206-.1l-.232.035-.059-.324a.2.2,0,0,0-.171-.162l-.331-.042a.2.2,0,0,0-.18.073l-.36.447-.674-.816A.2.2,0,0,0,15,63.57l-.913.059-2.66-4.214a.2.2,0,0,0-.169-.093H4.909a.2.2,0,0,0-.185.126l-1.569,3.96H1.622A.935.935,0,0,0,.586,64.445V66.03A.632.632,0,0,0,0,66.66v.575a.632.632,0,0,0,.632.632H2.658a2.085,2.085,0,0,0,4.147,0h5.311a2.085,2.085,0,0,0,4.147,0H18v1.418a.2.2,0,0,0,.2.2h2.955a.2.2,0,0,0,.2-.2V53.932A.2.2,0,0,0,21.155,53.733ZM4.731,68.836a1.188,1.188,0,1,1,1.188-1.188A1.189,1.189,0,0,1,4.731,68.836Zm9.458,0a1.188,1.188,0,1,1,1.188-1.188A1.189,1.189,0,0,1,14.189,68.836Z"
+              transform="translate(0 -53.733)" fill="#fff" />
+            <path id="Path_43" data-name="Path 43"
+              d="M264.243,188.815a.3.3,0,1,0-.352.487l3.2,2.314a.3.3,0,1,0,.352-.487Z"
+              transform="translate(-250.639 -182.038)" fill="#fff" />
+            <path id="Path_44" data-name="Path 44"
+              d="M326.975,105.034a.3.3,0,0,0,.3.266l.035,0a.3.3,0,0,0,.264-.333l-.579-4.975a.3.3,0,1,0-.6.069Z"
+              transform="translate(-310.137 -97.42)" fill="#fff" />
+            <path id="Path_45" data-name="Path 45"
+              d="M248.031,129.89a.3.3,0,0,0,.423-.427l-3.433-3.394a.3.3,0,1,0-.422.427Z"
+              transform="translate(-232.341 -122.389)" fill="#fff" />
+            <path id="Path_46" data-name="Path 46"
+              d="M296.984,118.074a.3.3,0,1,0,.567-.2l-.617-1.774a.3.3,0,1,0-.567.2Z"
+              transform="translate(-281.59 -112.806)" fill="#fff" />
+          </g>
+        </svg>
+        <svg class="c-paradise__icon js-low_fuel" id="low_fuel_icon" data-name="low fuel icon"
+          xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+          <rect id="Rectangle_1" data-name="Rectangle 1" width="32" height="32" fill="none" />
+          <g id="icons8-fuel-gas" transform="translate(8 8)">
+            <path id="Path_41" data-name="Path 41"
+              d="M11.8-60.2l-.8.768V-45H21.24v-2.56c0-2.336.064-2.56.64-2.56s.64.224.64,1.76c0,1.472.128,1.92.8,2.56a1.734,1.734,0,0,0,2.88,0c.768-.736.8-.928.8-5.152V-55.3l-2.048-2.112c-1.792-1.856-2.112-2.048-2.56-1.664-.48.384-.448.512.48,1.472L23.9-56.552l-.7.864a3.437,3.437,0,0,0-.672,1.248,2.85,2.85,0,0,0,2.112,2.08c.768,0,.768.032.768,2.88,0,2.656-.032,2.88-.64,2.88-.576,0-.64-.224-.64-1.792,0-2.368-.384-3.008-1.76-3.008H21.24v-4c0-3.84-.032-4.064-.8-4.8-.736-.768-.992-.8-4.32-.8S12.536-60.968,11.8-60.2Zm7.84,2.56v1.76H12.6V-59.4h7.04ZM25.3-54.728c.256.672-.416,1.344-.9.864-.416-.416-.16-1.376.352-1.376C24.952-55.24,25.176-55.016,25.3-54.728ZM19.64-50.44v3.84H12.6v-7.68h7.04Z"
+              transform="translate(-11 61)" fill="#fff" />
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="c-buttons">
+      <button class="c-button c-button__boost js-boost">boost</button>
+      <button class="c-button c-button__logs" onclick="window.location.href='/logs.html'">logs</button>
+    </div>
+  </div>
+
+
+</body>
+
+</html>
