@@ -34,6 +34,15 @@ const initDashboard = function(){
 }
 
 const initTable = async function(){
+  //check if needed to display
+  logs = document.querySelector(".js-logs")
+  if (window.innerWidth < 1024) {
+    logs.style.display = "none"
+  }else{
+    logs.style.display = "block"
+  }
+
+  //make table
   table = document.querySelector(".js-tbody");
 
   data = await getLogsData()
@@ -52,7 +61,6 @@ const initTable = async function(){
                           </tr>`
       i++
   }
-      
 }
 
 async function getLogsData(){
@@ -64,10 +72,15 @@ async function getLogsData(){
 
 
 const listenToUI = function () {
-  const boost = document.querySelector(".js-boost");
+  const boost = document.querySelector(".js-stop");
   boost.addEventListener("click", function(){
-    socket.send("F2B_boost")
-    console.log("boost")
+    if(boost.innerHTML == "stop engine"){
+      socket.emit("F2B_emergency_stop")
+      boost.innerHTML = "start engine"
+    }else if(boost.innerHTML == "start engine"){
+      socket.emit("F2B_start_motor")
+      boost.innerHTML = "stop engine"
+    }
   })
 
   power_off = document.querySelector(".js-power-off")

@@ -140,6 +140,7 @@ table{
   .c-dashboard{
     grid-column: 2 / span 1;
     grid-row: 1 / span 2;
+    justify-content: center;
   }
 }
 
@@ -160,10 +161,12 @@ table{
 
 @media only screen and (min-width: 1024px){
   .c-gauge{
+    position: relative;
+    align-self: center;
     margin-top: 0; 
     background-color: #137;
-    width: 600px;
-    padding-top: 600px;
+    width: 500px;
+    padding-top:500px;
   }
   .c-speedometer{
     height: fit-content;
@@ -258,6 +261,10 @@ table{
   font: inherit;
   font-size: 1.5em;
   font-weight: bold;
+}
+
+.c-button:active{
+  box-shadow: inset 0px 0px 5px black;
 }
 
 @media only screen and (min-width: 600px) {
@@ -402,6 +409,10 @@ table{
   }
 }
 
+
+/*
+  utility
+*/
 
 
 
