@@ -45,3 +45,6 @@ def sensor_and_actuator_comms(value, sensor):
             buzz.send_buzz()
 
         DataRepository.Add_measurement(gyroscope_id, value, now, comment)
+
+    if sensor == "hall":
+        

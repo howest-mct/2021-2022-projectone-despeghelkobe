@@ -5,12 +5,12 @@ import os
 #helpers
 from helpers.klasseknop import Button
 from helpers.ultrasonicClass import Ultrasonic
-from helpers.addComment import add_comment
 from helpers.buzzerClass import Buzzer
 from helpers.LCDClass import ShiftAndLCD
 from helpers.sendMeasurements import *
 from helpers.mcp3008Class import MCP3008
 from helpers.relayClass import Relay
+from helpers.hallClass import Hall
 
 import threading
 
@@ -27,12 +27,12 @@ from selenium import webdriver
 # from selenium.webdriver.chrome.options import Options
 
 
-ledPin = 21
 
 US_sensor = Ultrasonic(16,20)
 LCD = ShiftAndLCD(23,24,13,12,6,5,22)
 MCP = MCP3008(0,0)
-valveRelay = Relay(19)
+motorRelay = Relay(19)
+hall = Hall(27)
 
 #region Code for Flask
 
@@ -64,10 +64,13 @@ def logs():
 def initial_connection():
     print('A new client connect')
 
-@socketio.on("F2B_boost")
-def button():
-    # valveRelay.circuitbreaker(1.5)
-    print("joost")
+@socketio.on("F2B_emergency_stop")
+def emergency_stop():
+    motorRelay.on()
+
+@socketio.on("F2B_start_motor")
+def start_motor():
+    motorRelay.off()
 
 @socketio.on("F2B_power_off")
 def power_off():
@@ -150,9 +153,6 @@ if __name__ == '__main__':
     try:
         #setup LCD
         LCD.write_page0() #IP
-        valveRelay.on()
-        time.sleep(1)
-        valveRelay.off()
         start_chrome_thread()
         start_measure_thread()
         print("**** Starting APP ****")
