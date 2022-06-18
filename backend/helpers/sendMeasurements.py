@@ -15,7 +15,10 @@ gyroscope_id = 3
 buzzer_id = 5
 valveRelay_id = 6
 carmotorRelay_id = 7
-hall_id = 9 
+hall_id = 9
+
+#tire circumference
+tire = 0.07 #m
 
 
 
@@ -47,4 +50,7 @@ def sensor_and_actuator_comms(value, sensor):
         DataRepository.Add_measurement(gyroscope_id, value, now, comment)
 
     if sensor == "hall":
-        
+        rpm = value * 60
+        speed = 0.1885 * rpm * tire #km/h
+        DataRepository.Add_measurement(hall_id, speed, now, comment)
+        main.emit_speed()

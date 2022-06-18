@@ -28,10 +28,10 @@ from selenium import webdriver
 
 
 
-US_sensor = Ultrasonic(16,20)
+US_sensor = Ultrasonic(18,16)
 LCD = ShiftAndLCD(23,24,13,12,6,5,22)
 MCP = MCP3008(0,0)
-motorRelay = Relay(19)
+motorRelay = Relay(17)
 hall = Hall(27)
 
 #region Code for Flask
@@ -87,6 +87,9 @@ def emit_voltage(value):
 
 def emit_tilt(value):
     socketio.emit('B2F_send_tilt', {'degrees': value})
+
+def emit_speed(value):
+    socketio.emit("B2F_send_speed", {"speed": value})
 #endregion
 
 
@@ -133,8 +136,11 @@ def measuring():
         sensor_and_actuator_comms(distance, "ultrasonic")
 
         voltage = MCP.read(0)/40.92
-        # print(f"{voltage/40.92} V")
+        # print(f"{voltage} V")
         sensor_and_actuator_comms(voltage, "volt")
+
+        rps = hall.rps
+        sensor_and_actuator_comms(rps, "hall")
 
         time.sleep(1)
         
@@ -147,8 +153,6 @@ def start_measure_thread():
 
 
 # ANDERE FUNCTIES
-
-
 if __name__ == '__main__':
     try:
         #setup LCD

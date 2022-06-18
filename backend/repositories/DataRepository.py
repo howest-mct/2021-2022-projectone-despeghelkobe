@@ -19,6 +19,16 @@ class DataRepository:
         sql += "limit 50;"
         return Database.get_rows(sql)
 
+    @staticmethod
+    def read_voltage():
+        sql = "select value, datetime from carcontrol.History "
+        sql += "where device_id = 2 "
+        sql += "order by datetime desc "
+        sql += "limit 20"
+        return Database.get_rows(sql)
+
+
+
     # @staticmethod
     # def read_status_lamp_by_id(id):
     #     sql = "SELECT * from lampen WHERE id = %s"
