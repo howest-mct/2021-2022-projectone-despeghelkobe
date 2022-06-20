@@ -59,6 +59,18 @@ def logs():
     data = DataRepository.read_history()
     return jsonify(data)
 
+@app.route('/volt')
+def voltage():
+    data = DataRepository.read_device_values_by_id(2)
+    return jsonify(data)
+
+@app.route('/speed')
+def speed():
+    data = DataRepository.read_device_values_by_id(9)
+    return jsonify(data)
+
+
+
 
 @socketio.on('connect')
 def initial_connection():
@@ -91,8 +103,6 @@ def emit_tilt(value):
 def emit_speed(value):
     socketio.emit("B2F_send_speed", {"speed": value})
 #endregion
-
-
 
 
 def start_chrome_kiosk():

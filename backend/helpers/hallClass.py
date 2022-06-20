@@ -18,6 +18,7 @@ class Hall:
         stop_time = time.time()
         delta_time = stop_time - self.__start_time
         rps = self.__counter/ delta_time
+        
         self.__counter = 0
         self.__start_time = time.time()
         return rps

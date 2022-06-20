@@ -97,6 +97,8 @@ class ShiftAndLCD:
 
     def write_page0(self): #IP
         ip = str(check_output(['hostname','--all-ip-addresses']))
-        ip = ip[18:33]
+        ip = ip.split(' ')
+        print(ip[0])
+        ip = ip[0][2:]
         self.set_cursor(0,0,0)
         self.write_text(ip)

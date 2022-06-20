@@ -20,12 +20,13 @@ class DataRepository:
         return Database.get_rows(sql)
 
     @staticmethod
-    def read_voltage():
+    def read_device_values_by_id(id):
         sql = "select value, datetime from carcontrol.History "
-        sql += "where device_id = 2 "
+        sql += "where device_id = %s "
         sql += "order by datetime desc "
         sql += "limit 20"
-        return Database.get_rows(sql)
+        params = [id]
+        return Database.get_rows(sql, params)
 
 
 

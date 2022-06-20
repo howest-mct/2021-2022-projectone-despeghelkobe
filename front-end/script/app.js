@@ -1,20 +1,34 @@
 const lanIP = `${window.location.hostname}:5000`;
 const socket = io.connect(`http://${lanIP}`);
+let starting_degree = -15
+
+digit_count = 8
+
+
 
 const initDashboard = function(){
+  // show labels on correct position on the site
+  const speedometer = document.querySelector(".js-speedometer")
+
+  for (let index = 0; index <= digit_count; index++) {
+    speedometer.innerHTML += `<div class="c-didgit js-didgit">
+      <div class="c-didgit__line"></div>
+      <div class="c-didgit__label js-label"></div>
+      </div>`
+  }
+
+
   const didgits = document.querySelectorAll(".js-didgit")
   const labels = document.querySelectorAll(".js-label")
   const pointer = document.querySelector(".js-pointer")
   didgit_count = didgits.length
-  i=0
-  starting_degree = -15
+  console.log(didgits)
+
   splits = (180 + (-starting_degree*2)) / (didgit_count-1)
-  
-  
-  // show labels on correct position on the site
+  i=0
   for(const didgit of didgits){
     degrees = (splits*i)+ starting_degree
-    speed = 20*i
+    speed = 2*i
     didgit.style.transform = `rotate(${degrees}deg)`
     i++
   }
@@ -22,7 +36,7 @@ const initDashboard = function(){
   i=0
   //show lines on correct position on the site
   for(const label of labels){
-    speed = 20*i
+    speed = 2*i
     degrees = (splits*i)+ starting_degree
     label.innerHTML = speed
     label.style.transform = `rotate(${-degrees}deg)`
@@ -45,7 +59,7 @@ const initTable = async function(){
   //make table
   table = document.querySelector(".js-tbody");
 
-  data = await getLogsData()
+  data = await getData("logs")
   i = 0
   for(const row of data){
       let color = ""
@@ -63,8 +77,8 @@ const initTable = async function(){
   }
 }
 
-async function getLogsData(){
-  let response = await fetch(`http://${lanIP}/logs`)
+async function getData(endpoint){
+  let response = await fetch(`http://${lanIP}/${endpoint}`)
   let data = await response.json()
   // console.log(data)
   return data
@@ -86,7 +100,7 @@ const listenToUI = function () {
   power_off = document.querySelector(".js-power-off")
   power_off.addEventListener("click", function(){
     console.log("dave")
-    // socket.emit("F2B_power_off")
+    socket.emit("F2B_power_off")
   })
 
   window.onresize = function(){
@@ -143,7 +157,15 @@ const listenToSocket = function () {
       }
     }
   })
- 
+  
+  socket.on("B2F_send_speed", function(jsonObject){
+    speed = jsonObject.speed
+    pointer = document.querySelector(".js-pointer")
+    angle = (speed / digit_count*2)*(180 * (-2*starting_degree))
+    pointer.style.transform = `rotate ${angle+starting_degree}`
+  })
+
+
 };
 
 document.addEventListener("DOMContentLoaded", function () {

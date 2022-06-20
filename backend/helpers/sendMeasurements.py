@@ -52,5 +52,5 @@ def sensor_and_actuator_comms(value, sensor):
     if sensor == "hall":
         rpm = value * 60
         speed = 0.1885 * rpm * tire #km/h
+        main.emit_speed(speed)
         DataRepository.Add_measurement(hall_id, speed, now, comment)
-        main.emit_speed()
