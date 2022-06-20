@@ -1,4 +1,4 @@
-const lanIP = `${window.location.hostname}:5000`;
+    const lanIP = `${window.location.hostname}:5000`;
 
 
 const initTable = async function(){
@@ -23,24 +23,36 @@ const initTable = async function(){
 }
 
 const initChart = async function(){
-    voltages = getData("volt")
-    speed = getData("speed")
-    // const labels = Object.keys(voltages)
-    const labels = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul']
+    voltages = await getData("volt")
+    speed = await getData("speed")
+    const labels = []
+    const data_speed = []
+    for (let index = 0; index < speed.length; index++) {
+        const row = speed[index];
+        label = new Date(row.datetime).toLocaleTimeString()
+        labels.push(label)
+        data_speed.push(row.value)
+    }
 
+    for (let index = 0; index < voltages.length; index++) {
+        const row = voltages[index];
+        data_speed.push(row.value)
+    }
+    
+    // const labels = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul']
     const data = {
     labels: labels,
     datasets: [{
         label: 'volt',
         backgroundColor: 'rgb(242,242,0)', //color of dots
         borderColor: 'rgb(242,242,0)', // color of lines
-        data: [0, 10, 5, 2, 20, 30, 45],
+        data: Object.values(voltages),
         yAxisID: 'volt'
     },{
         label: 'speed',
         backgroundColor: 'rgb(255,0,0)', //color of dots
         borderColor: 'rgb(255,0,0)', // color of lines
-        data: [0, 12, 18, 25 , 20, 10, 5],
+        data: data_speed,
         yAxisID: 'speed'
     }
     ]
@@ -50,6 +62,7 @@ const initChart = async function(){
         type: 'line',
         data: data,
         options: {
+            responsive: true,
             scales: {
                 volt: {
                     type: 'linear',

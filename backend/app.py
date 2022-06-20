@@ -34,6 +34,8 @@ MCP = MCP3008(0,0)
 motorRelay = Relay(17)
 hall = Hall(27)
 
+stopdistance = 20
+
 #region Code for Flask
 
 app = Flask(__name__)
@@ -89,6 +91,11 @@ def power_off():
     print("shutting down")
     GPIO.cleanup()
     os.system("sudo shutdown -h now")
+
+@socketio.on("F2B_send_stopping_distance")
+def stopping_distance(value):
+    global stopdistance
+    stopdistance = int(value.get('value'))
 
 #emits
 def emit_ultrasonic(value):
@@ -146,6 +153,7 @@ def measuring():
         sensor_and_actuator_comms(distance, "ultrasonic")
 
         voltage = MCP.read(0)/40.92
+        # print(voltage)
         # print(f"{voltage} V")
         sensor_and_actuator_comms(voltage, "volt")
 

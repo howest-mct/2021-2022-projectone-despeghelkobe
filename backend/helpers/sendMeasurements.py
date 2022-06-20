@@ -19,7 +19,7 @@ hall_id = 9
 
 #tire circumference
 tire = 0.07 #m
-
+prev_speed = 0
 
 
 def sensor_and_actuator_comms(value, sensor):
@@ -27,7 +27,8 @@ def sensor_and_actuator_comms(value, sensor):
     comment = ""
     #code for ultrasonic sensor
     if sensor == "ultrasonic":
-        if value < 20:
+        print(main.stopdistance)
+        if value < main.stopdistance:
             comment = "powering off off to avoid crash with wall"
             DataRepository.Add_excecute(carmotorRelay_id, now, "turning the motor off to avoid crashing into a wall")
             motorRelay.circuitbreaker(4)
@@ -52,5 +53,8 @@ def sensor_and_actuator_comms(value, sensor):
     if sensor == "hall":
         rpm = value * 60
         speed = 0.1885 * rpm * tire #km/h
-        main.emit_speed(speed)
-        DataRepository.Add_measurement(hall_id, speed, now, comment)
+        global prev_speed
+        if(prev_speed !=  0 or speed != 0):
+            main.emit_speed(speed)
+            DataRepository.Add_measurement(hall_id, speed, now, comment)
+        prev_speed = speed

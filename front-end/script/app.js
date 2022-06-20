@@ -2,7 +2,7 @@ const lanIP = `${window.location.hostname}:5000`;
 const socket = io.connect(`http://${lanIP}`);
 let starting_degree = -15
 
-digit_count = 8
+digit_count = 7
 
 
 
@@ -47,41 +47,18 @@ const initDashboard = function(){
   pointer.style.transform = `rotate(${starting_degree}deg)`
 }
 
-const initTable = async function(){
-  //check if needed to display
-  logs = document.querySelector(".js-logs")
-  if (window.innerWidth < 1024) {
-    logs.style.display = "none"
-  }else{
-    logs.style.display = "block"
-  }
 
-  //make table
-  table = document.querySelector(".js-tbody");
-
-  data = await getData("logs")
-  i = 0
-  for(const row of data){
-      let color = ""
-      if(i%2 == 0){
-          color = "#113377"
-      }
-      table.innerHTML += `<tr style="background-color: ${color}">
-                              <td>${new Date(row.datetime).toLocaleString()}</td>
-                              <td>${row.name}</td>
-                              <td>${row.action_description}</td>
-                              <td>${((row.value == null) ? row.value : row.value.toFixed(2))}</td>
-                              <td>${row.comment}</td>
-                          </tr>`
-      i++
-  }
-}
 
 async function getData(endpoint){
   let response = await fetch(`http://${lanIP}/${endpoint}`)
   let data = await response.json()
   // console.log(data)
   return data
+}
+
+const sendParameters = function() {
+  inputField = document.querySelector(".js-stop_distance")
+  socket.emit('F2B_send_stopping_distance', {value: inputField.value})
 }
 
 
@@ -97,21 +74,12 @@ const listenToUI = function () {
     }
   })
 
+
   power_off = document.querySelector(".js-power-off")
   power_off.addEventListener("click", function(){
     console.log("dave")
     socket.emit("F2B_power_off")
   })
-
-  window.onresize = function(){
-    logs = document.querySelector(".js-logs")
-    width = window.innerWidth
-    if(width < 1024){
-      logs.style.display = "none"
-    }else{
-      logs.style.display = "block"
-    }
-  }
 };
 
 const listenToSocket = function () {
@@ -161,8 +129,10 @@ const listenToSocket = function () {
   socket.on("B2F_send_speed", function(jsonObject){
     speed = jsonObject.speed
     pointer = document.querySelector(".js-pointer")
-    angle = (speed / digit_count*2)*(180 * (-2*starting_degree))
-    pointer.style.transform = `rotate ${angle+starting_degree}`
+    // console.log(speed / digit_count*2)
+    // console.log(180 + (-2*starting_degree))
+    angle = (speed / (digit_count*2))*(180 - (2*starting_degree))
+    pointer.style.transform = `rotate(${angle+starting_degree}deg)`
   })
 
 
@@ -171,7 +141,6 @@ const listenToSocket = function () {
 document.addEventListener("DOMContentLoaded", function () {
   console.info("DOM geladen");
   initDashboard();
-  initTable();
   listenToUI();
   listenToSocket();
 });

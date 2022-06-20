@@ -35,20 +35,13 @@
         </svg>
       </div>
     </header>
-    <div class="c-logs js-logs">
-      <table class="c-logs__table">
-          <thead>
-             <tr>
-                  <th>time</th>
-                  <th>device</th>
-                  <th>action</th>
-                  <th>value</th>
-                  <th>comment</th>
-              </tr> 
-          </thead>
-          <tbody class="js-tbody">
-          </tbody>
-      </table>
+
+    <div class="c-parameters">
+      <div class="c-parameters__form">
+        <label for="ultrasonic">stopping distance: </label>
+        <input class="js-stop_distance" type="number" id="ultrasonic" name="ultrasonic" value="20"><br>
+      </div>
+      <button class="c-parameters_button c-button" onclick="sendParameters()">Apply</button>
     </div>
 
     <div class="c-dashboard">
@@ -125,7 +118,7 @@
 
     <div class="c-buttons">
       <button class="c-button c-button__boost js-stop">stop engine</button>
-      <button class="c-button c-button__logs" onclick="window.location.href='/logs.html'">logs</button>
+      <button class="c-button c-button__logs" onclick="window.location.href='/data.html'">logs</button>
     </div>
   </div>
 
